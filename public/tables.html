@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tables Page</title>
+  <!-- Latest compiled and minified CSS & JS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Hot Restaurant</h1>
+      <h3>Current Reservations and Waiting List</h3>
+      <hr>
+      <a href="/reserve"><button class="btn btn-danger btn-lg" id="reserve-btn"><span class="fa fa-plus"></span> Make
+          Reservation</button></a>
+      <a href="/home"><button class="btn btn-primary btn-lg"><span class="fa fa-home"></button></a>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+
+        <!--  Reservation Card -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h3><strong>Current Reservations</strong></h3>
+          </div>
+          <div class="card-body">
+            <br>
+            <div id="reservations">
+              <table id="reservations-tbl" class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width:20%">Table Number</th>
+                    <th scope="col" style="width:20%">Name</th>
+                    <th scope="col" style="width:20%">Phone</th>
+                    <th scope="col" style="width:20%">Email</th>
+                    <th scope="col" style="width:20%">Id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waitlist Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Wait List</h3>
+          </div>
+          <div class="card-body">
+            <br>
+            <div id="waitlist">
+              <table id="waitlist-tbl" class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width:20%">Waitlist Number</th>
+                    <th scope="col" style="width:20%">Name</th>
+                    <th scope="col" style="width:20%">Phone</th>
+                    <th scope="col" style="width:20%">Email</th>
+                    <th scope="col" style="width:20%">Id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      // Clear the screen
+      $("#reservations-tbl > tbody").empty();
+
+      // Popuate table list via api call
+      $.get("/api/tables/", function (data) {
+        console.log("=== Seated ===");
+        console.log(data);
+        console.log("==============");
+
+        if (data) {
+          $("#reservations").show();
+          updateSeatingTable("reservations-tbl", data);
+        } else {
+          $("#reservations").hide();
+        }
+      });
+
+      // Popuate wait list via api call
+      $.get("/api/waitlist/", function (data) {
+        console.log("===  Wait Listed ===");
+        console.log(data);
+        console.log("====================");
+
+        if (data) {
+          $("#waitlist").show();
+          updateSeatingTable("waitlist-tbl", data);
+        } else {
+          $("#waitlist").hide();
+        }
+      });
+
+      // Helper function to create a new table row and populate with the formatted data
+      function updateSeatingTable(tableName, data) {
+
+        for (let i = 0; i < data.length; i++) {
+          var newRow = $("<tr>").append(
+            $("<td>").text(i+1),
+            $("<td>").text(data[i].name),
+            $("<td>").text(data[i].phone),
+            $("<td>").text(data[i].email),
+            $("<td>").text(data[i].unique_id)
+          );
+          $("#" + tableName + " > tbody").append(newRow);
+        }
+      }
+    </script>
+</body>
+
+</html>
