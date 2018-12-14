@@ -10,11 +10,13 @@ var waitlist = require("./data/waitlist.js");
 // =============================================================
 var app = express();
 // var PORT = 3000;              // localhost
-const PORT = process.env.PORT;   // heroku
+const PORT = process.env.PORT; // heroku
 const MAX_TABLES = 5;
 
 // Sets up the Express app to handle data parsing
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+    extended: true
+}));
 app.use(express.json());
 
 // Routes for displaying HTML pages
@@ -61,7 +63,7 @@ app.post("/api/reserve", function (req, res) {
     var newReservation = req.body;
 
     console.log(newReservation);
-    
+
     let reserved = false;
     if (tables.length < MAX_TABLES) {
         // Success - Add to the master tables array
@@ -71,7 +73,7 @@ app.post("/api/reserve", function (req, res) {
         // We then add the json the user sent to the tables array
         reserved = false;
         waitlist.push(newReservation);
-    } 
+    }
 
     // We then display the JSON to the users
     res.json(reserved);
